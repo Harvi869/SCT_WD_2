@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stopwatch</title>
+   <style>
+    body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+.stopwatch {
+    margin: 50px auto;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #edb8bc;
+    color: white;
+    width: 300px;
+}
+
+#display {
+    font-size: 48px;
+    margin-bottom: 20px;
+}
+
+.buttons button {
+    padding: 10px 20px;
+    margin: 5px;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+#laps {
+    margin-top: 20px;
+}
+
+#lapTimes {
+    list-style-type: none;
+    padding: 0;
+}
+
+#lapTimes li {
+    background-color: #444;
+    padding: 5px;
+    margin: 5px 0;
+    color: white;
+    border-radius: 5px;
+}
+
+   </style>>
+</head>
+<body>
+    <div class="stopwatch">
+        <h1>Stopwatch</h1>
+        <div id="display">00:00:00</div>
+        <div class="buttons">
+            <button id="startPauseBtn">Start</button>
+            <button id="resetBtn" disabled>Reset</button>
+            <button id="lapBtn" disabled>Lap</button>
+        </div>
+        <div id="laps">
+            <h3>Lap Times</h3>
+            <ul id="lapTimes"></ul>
+        </div>
+    </div>
+
+    <script>
+        let startTime, updatedTime, difference, tInterval;
+let running = false;
+let lapCounter = 1;
+
+const display = document.getElementById('display');
+const startPauseBtn = document.getElementById('startPauseBtn');
+const resetBtn = document.getElementById('resetBtn');
+const lapBtn = document.getElementById('lapBtn');
+const lapTimes = document.getElementById('lapTimes');
+
+function startTimer() {
+    startTime = new Date().getTime();
+    tInterval = setInterval(getShowTime, 1000);
+    running = true;
+    startPauseBtn.innerText = "Pause";
+    resetBtn.disabled = false;
+    lapBtn.disabled = false;
+}
+
+function pauseTimer() {
+    clearInterval(tInterval);
+    running = false;
+    startPauseBtn.innerText = "Start";
+}
+
+function resetTimer() {
+    clearInterval(tInterval);
+    running = false;
+    startPauseBtn.innerText = "Start";
+    display.innerText = "00:00:00";
+    lapTimes.innerHTML = '';
+    lapCounter = 1;
+    resetBtn.disabled = true;
+    lapBtn.disabled = true;
+}
+
+function getShowTime() {
+    updatedTime = new Date().getTime();
+    difference = updatedTime - startTime;
+    
+    let hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    let minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+    let seconds = Math.floor((difference % (1000 * 60)) / 1000);
+    
+    display.innerText = (hours > 9 ? hours : "0" + hours) + ":" + 
+                        (minutes > 9 ? minutes : "0" + minutes) + ":" + 
+                        (seconds > 9 ? seconds : "0" + seconds);
+}
+
+function lapTimer() {
+    let li = document.createElement("li");
+    li.innerText = `Lap ${lapCounter}: ${display.innerText}`;
+    lapTimes.appendChild(li);
+    lapCounter++;
+}
+
+startPauseBtn.addEventListener('click', () => {
+    if (!running) {
+        startTimer();
+    } else {
+        pauseTimer();
+    }
+});
+
+resetBtn.addEventListener('click', resetTimer);
+lapBtn.addEventListener('click', lapTimer);
+
+    </script>
+</body>
+</html>
